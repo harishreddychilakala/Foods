@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './App.css'
 import fallbackProductImage from './assets/hero.png'
-import logo from './images/logo.png'
+import logo from './images/logo.jpeg'
 import { products } from './data/products'
 import { createOrderLink } from './utils/whatsapp'
 import { useCart } from './context/CartContext'
@@ -16,12 +16,6 @@ const bonelessPricesBySize = {
   '250g': '₹299',
   '500g': '₹499',
   '1kg': '₹999'
-}
-
-const stockBySize = {
-  '250g': 8,
-  '500g': 6,
-  '1kg': 4
 }
 
 function ProductDetails() {
@@ -89,8 +83,7 @@ function ProductDetails() {
   const productImage = product.image || fallbackProductImage
   const isBoneless = selectedCut === 'Boneless'
   const selectedPrice = isBoneless ? bonelessPricesBySize[product.size] || product.price : product.price
-  const stockLeft = Math.max(2, (stockBySize[product.size] || 5) - (isBoneless ? 2 : 0))
-  const stockUrgencyMessage = stockLeft <= 6 ? `Only ${stockLeft} left in stock - order soon` : 'In stock and ready to ship'
+  const stockUrgencyMessage = 'Freshly prepared after order confirmation'
 
   const productForOrder = {
     ...product,

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './App.css'
-import logo from './images/logo.png'
+import logo from './images/logo.jpeg'
 import { useCart } from './context/CartContext'
+import { createWhatsAppLink } from './utils/whatsapp'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
 
 const formatRupees = (value) => `₹${value.toLocaleString('en-IN')}`
@@ -35,6 +36,16 @@ function CartPage() {
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const cartOrderMessage = [
+    "Hi, I want to place this order from Aruna's Home Foods:",
+    ...cartItems.map(
+      (item, index) =>
+        `${index + 1}. ${item.name} - ${item.quantity} x ${item.price} = ${formatRupees(parsePrice(item.price) * item.quantity)}`
+    ),
+    `Total Items: ${itemCount}`,
+    `Total Price: ${formatRupees(totalPrice)}`
+  ].join('\n')
 
   return (
     <div className="site-wrapper">
@@ -128,6 +139,14 @@ function CartPage() {
                 <button type="button" className="btn btn-secondary" onClick={() => navigate('/')}>
                   Add More Items
                 </button>
+                <a
+                  className="btn btn-secondary"
+                  href={createWhatsAppLink(cartOrderMessage)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Order Now
+                </a>
                 <button type="button" className="btn btn-primary" onClick={clearCart}>
                   Clear Cart
                 </button>

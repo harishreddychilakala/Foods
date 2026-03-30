@@ -3,8 +3,8 @@ import fallbackProductImage from './assets/hero.png'
 import aboutUsImage from './images/Aboutus-pic.jpg'
 import preservativesFreeImage from './images/PreservativesFree.jpg'
 import safePackagingImage from './images/Safe Packaging.png'
-import smallBatchImage from './images/SmallBatch-image.webp'
-import logo from './images/logo.png'
+import smallBatchImage from './images/SmallBatch.webp'
+import logo from './images/logo.jpeg'
 import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { products } from './data/products'
@@ -15,6 +15,14 @@ import { BackToTop } from './components/BackToTop'
 import { SearchBar } from './components/SearchBar'
 import { SkeletonLoader } from './components/SkeletonLoader'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
+
+const chickenCuts = ['With Bone', 'Boneless']
+
+const bonelessPricesBySize = {
+  '250g': '₹299',
+  '500g': '₹499',
+  '1kg': '₹999'
+}
 
 const whyChooseUs = [
   {
@@ -79,6 +87,12 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isTopbarScrolled, setIsTopbarScrolled] = useState(false)
+  const [selectedCutsByProduct, setSelectedCutsByProduct] = useState(() =>
+    products.reduce((acc, product) => {
+      acc[product.id] = 'With Bone'
+      return acc
+    }, {})
+  )
 
   // Get unique categories
   const categories = useMemo(() => [...new Set(products.map(p => p.category))], [])
@@ -167,6 +181,14 @@ function App() {
     setAddedMessage(`${product.name} added to cart`)
   }
 
+  const handleCutSelect = (productId, cut, event) => {
+    event.stopPropagation()
+    setSelectedCutsByProduct((prev) => ({
+      ...prev,
+      [productId]: cut
+    }))
+  }
+
   return (
     <div className={`site-wrapper ${isTopbarScrolled ? 'is-scrolling' : ''}`}>
       <header className={`topbar ${isTopbarScrolled ? 'topbar-scrolled' : ''}`}>
@@ -189,6 +211,7 @@ function App() {
       <main id="top">
         <section className="hero-section scroll-reveal elevate-on-scroll">
           <div className="hero-content">
+            <img className="hero-brand-logo" src={logo} alt="Aruna's Home Foods brand mark" />
             <p className="eyebrow">Tradition In Every Jar</p>
             <h1>Authentic Homemade Pickles</h1>
             <p className="hero-copy">
@@ -239,64 +262,90 @@ function App() {
             {isLoading ? (
               <SkeletonLoader count={6} />
             ) : filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <article
-                  className="product-card glass-effect"
-                  key={product.id}
-                  onClick={() => openProduct(product)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault()
-                      openProduct(product)
-                    }
-                  }}
-                >
-                  <div className="product-image-wrapper">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      loading="lazy"
-                      onError={(event) => {
-                        event.currentTarget.onerror = null
-                        event.currentTarget.src = fallbackProductImage
-                      }}
-                    />
-                    <div className="product-badges">
-                      {product.isNew && <span className="badge badge-new">New</span>}
-                      {product.discount && <span className="badge badge-discount">{product.discount}</span>}
+              filteredProducts.map((product) => {
+                const selectedCut = selectedCutsByProduct[product.id] || 'With Bone'
+                const isBoneless = selectedCut === 'Boneless'
+                const selectedPrice = isBoneless
+                  ? bonelessPricesBySize[product.size] || product.price
+                  : product.price
+                const productForOrder = {
+                  ...product,
+                  id: isBoneless ? `${product.id}-boneless` : product.id,
+                  name: isBoneless ? `${product.name} (Boneless)` : product.name,
+                  price: selectedPrice
+                }
+
+                return (
+                  <article
+                    className="product-card glass-effect"
+                    key={product.id}
+                    onClick={() => openProduct(product)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        openProduct(product)
+                      }
+                    }}
+                  >
+                    <div className="product-image-wrapper">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        loading="lazy"
+                        onError={(event) => {
+                          event.currentTarget.onerror = null
+                          event.currentTarget.src = fallbackProductImage
+                        }}
+                      />
+                      <div className="product-badges">
+                        {product.isNew && <span className="badge badge-new">New</span>}
+                        {product.discount && <span className="badge badge-discount">{product.discount}</span>}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="product-body">
-                    <h3>{product.name}</h3>
+                    <div className="product-body">
+                      <h3>{product.name}</h3>
 
+                      <p className="product-price">Price: {selectedPrice}</p>
+                      <p className="offer-tag">✨ {product.offer}</p>
 
-                    <p className="product-price">Price: {product.price}</p>
-                    <p className="offer-tag">✨ {product.offer}</p>
+                      <div className="card-cut-options" role="tablist" aria-label={`Select cut type for ${product.name}`}>
+                        {chickenCuts.map((cut) => (
+                          <button
+                            type="button"
+                            key={cut}
+                            className={`card-cut-btn ${selectedCut === cut ? 'card-cut-btn-active' : ''}`}
+                            onClick={(event) => handleCutSelect(product.id, cut, event)}
+                          >
+                            {cut}
+                          </button>
+                        ))}
+                      </div>
 
-                    <div className="product-meta">
-                      <button
-                        type="button"
-                        className="cart-btn hover-lift"
-                        onClick={(event) => handleAddToCart(product, event)}
-                      >
-                        Add to Cart
-                      </button>
-                      <a
-                        className="wa-btn hover-lift"
-                        href={createOrderLink(product)}
-                        onClick={(event) => event.stopPropagation()}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Order on WhatsApp
-                      </a>
+                      <div className="product-meta">
+                        <button
+                          type="button"
+                          className="cart-btn hover-lift"
+                          onClick={(event) => handleAddToCart(productForOrder, event)}
+                        >
+                          Add to Cart
+                        </button>
+                        <a
+                          className="wa-btn hover-lift"
+                          href={createOrderLink(productForOrder, selectedCut)}
+                          onClick={(event) => event.stopPropagation()}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Order on WhatsApp
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))
+                  </article>
+                )
+              })
             ) : (
               <div className="empty-state" style={{ gridColumn: '1 / -1' }}>
                 <p className="empty-icon">🔍</p>
@@ -417,7 +466,7 @@ function App() {
                 <strong>Email:</strong>{' '}
                 <a href="mailto:arunahomefoods23@gmail.com">arunahomefoods23@gmail.com</a>
               </p>
-              <p className="company-line"><strong>Physical address:</strong> TC Palle, Banglore, Karnataka</p>
+              <p className="company-line"><strong>Physical address:</strong> Tc palya , hallehalli main road ,bangalore-560036, Karnataka</p>
             </section>
 
             <section className="footer-block" aria-label="Customer Support Details">

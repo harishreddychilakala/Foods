@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './App.css'
-import logo from './images/logo.png'
+import logo from './images/logo.jpeg'
 import fallbackProductImage from './assets/hero.png'
 import aboutUsImage from './images/Aboutus-pic.jpg'
 import { DEFAULT_WHATSAPP_MESSAGE, WHATSAPP_DISPLAY, createWhatsAppLink } from './utils/whatsapp'

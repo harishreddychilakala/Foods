@@ -100,9 +100,9 @@ html {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  padding: 2px;
+  padding: 0;
   background: #ffffff;
   overflow: hidden;
   display: block;
@@ -176,6 +176,19 @@ html {
   position: relative;
   z-index: 1;
   max-width: 840px;
+}
+
+.hero-brand-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 14px;
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(253, 246, 238, 0.7);
+  box-shadow: 0 12px 24px rgba(5, 22, 13, 0.24);
 }
 
 .hero-content .eyebrow {
@@ -836,8 +849,8 @@ html {
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
 }
 
 .product-card {
@@ -861,16 +874,16 @@ html {
 }
 
 .product-body {
-  padding: 18px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  height: 100%;
+  gap: 8px;
 }
 
 .product-body h3 {
   margin: 0;
   color: var(--green);
+  font-size: 1rem;
 }
 
 .product-body p {
@@ -881,6 +894,7 @@ html {
 .product-price {
   color: var(--green) !important;
   font-weight: 800;
+  font-size: 0.96rem;
 }
 
 .offer-tag {
@@ -888,12 +902,41 @@ html {
   font-weight: 700;
   background: rgba(200, 169, 81, 0.22);
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 5px 8px;
+  font-size: 0.82rem;
 }
 
 .product-meta {
-  margin-top: auto;
-  display: block;
+  margin-top: 6px;
+  display: grid;
+  gap: 8px;
+}
+
+.card-cut-options {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-cut-btn {
+  border: 1px solid rgba(31, 77, 43, 0.22);
+  background: #ffffff;
+  color: var(--green);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-weight: 700;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.card-cut-btn:hover {
+  transform: translateY(-1px);
+}
+
+.card-cut-btn-active {
+  background: rgba(31, 77, 43, 0.12);
+  border-color: rgba(31, 77, 43, 0.45);
 }
 
 .recipe-details {
@@ -1008,9 +1051,9 @@ html {
 
 .stock-urgency {
   margin: 0;
-  background: rgba(198, 64, 38, 0.12);
-  color: #8f2f1c;
-  border: 1px solid rgba(198, 64, 38, 0.25);
+  background: rgba(15, 107, 53, 0.12);
+  color: #0f6b35;
+  border: 1px solid rgba(15, 107, 53, 0.24);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 0.82rem;
@@ -1582,6 +1625,12 @@ html {
     font-size: clamp(1.7rem, 8vw, 2.25rem);
   }
 
+  .hero-brand-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 12px;
+  }
+
   .hero-copy {
     font-size: 0.95rem;
     margin-bottom: 18px;
@@ -1683,7 +1732,7 @@ html {
   }
 
   .product-card img {
-    height: 210px;
+    height: 180px;
   }
 
   .cart-item {
@@ -1983,7 +2032,7 @@ html {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  aspect-ratio: 1;
+  aspect-ratio: 5 / 4;
 }
 
 .product-image-wrapper img {
