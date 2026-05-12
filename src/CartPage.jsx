@@ -126,6 +126,9 @@ function CartPage() {
 
             <aside className="cart-summary">
               <h2>Order Summary</h2>
+              <p className="cart-summary-note">
+                Secure WhatsApp confirmation, hygienic packing, and fresh small-batch preparation.
+              </p>
               <p className="summary-row">
                 <span>Total Items</span>
                 <strong>{itemCount}</strong>

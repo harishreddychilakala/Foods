@@ -849,7 +849,7 @@ html {
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -878,6 +878,11 @@ html {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+}
+
+.product-body .btn {
+  margin-top: auto !important;
 }
 
 .product-body h3 {
@@ -1241,6 +1246,16 @@ html {
   box-shadow: var(--shadow-soft);
 }
 
+.cart-summary-note {
+  margin: 0 0 16px;
+  color: var(--text-soft);
+  line-height: 1.6;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(31, 77, 43, 0.06), rgba(200, 169, 81, 0.08));
+  border: 1px solid rgba(31, 77, 43, 0.08);
+}
+
 .cart-summary h2 {
   margin: 0 0 12px;
   color: var(--green);
@@ -1540,10 +1555,13 @@ html {
   }
 
   .highlights,
-  .product-grid,
   .why-us-grid,
   .testimonial-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .testimonial-grid {
+    grid-template-columns: 1fr;
   }
 
   .product-open-top {
@@ -1655,10 +1673,16 @@ html {
   }
 
   .highlights,
-  .product-grid,
-  .why-us-grid,
+  .why-us-grid {
+    grid-template-columns: 1fr;
+  }
+
   .testimonial-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .about-card,
@@ -1732,7 +1756,12 @@ html {
   }
 
   .product-card img {
-    height: 180px;
+    height: 160px;
+  }
+
+  .product-body {
+    padding: 10px;
+    gap: 6px;
   }
 
   .cart-item {
@@ -2438,6 +2467,10 @@ html {
 
   .testimonial-grid {
     gap: 12px;
+  }
+
+  .testimonial-card-no-image .testimonial-body {
+    padding: 14px;
   }
 
   .testimonial-title {

@@ -18,12 +18,6 @@ import FloatingWhatsApp from './components/FloatingWhatsApp'
 
 const chickenCuts = ['With Bone', 'Boneless']
 
-const bonelessPricesBySize = {
-  '250g': '₹299',
-  '500g': '₹499',
-  '1kg': '₹999'
-}
-
 const whyChooseUs = [
   {
     icon: '🧑‍🍳',
@@ -52,30 +46,59 @@ const whyChooseUs = [
   }
 ]
 
-const launchHighlights = [
+const customerReviews = [
   {
-    icon: '🍲',
-    title: 'Freshly Made for Every Order',
+    icon: '⭐',
+    title: 'Spice Lover',
     text:
-      'We prepare in small batches after order confirmation so you get maximum freshness and aroma.',
-    image:
-      'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=900&q=80'
+      "Authentic taste and perfectly spiced! The chicken-to-masala ratio is spot on. It isn't just 'chili heat' - you can actually taste the ginger, garlic, and mustard. A must-have for spice lovers!"
   },
   {
-    icon: '🌶️',
-    title: 'Honest Ingredients, No Shortcuts',
-    text:
-      'Only quality meat, real spices, and traditional methods. No artificial color, no artificial taste.',
-    image:
-      'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80'
+    icon: '⭐',
+    title: 'Homely Pickles',
+    text: 'Thank you for homely pickles'
   },
   {
-    icon: '🎁',
-    title: 'Founders Special Launch Offer',
+    icon: '⭐',
+    title: 'Tomato Pickle',
     text:
-      'As a thank-you for supporting our new journey, every order includes a free ground nut powder packet.',
-    image:
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80'
+      'Today, we bought tomato pickle from Aruna\'s Kitchen. It was very tasty. The salt and spices were just right. We really enjoyed it.'
+  },
+  {
+    icon: '⭐',
+    title: 'Chicken Pickle',
+    text:
+      'Chicken pickle is really good and taste is delicious Akka, less spicy highly recommended to others also. Keep rocking Akka.'
+  },
+  {
+    icon: '⭐',
+    title: 'Homemade Vibes',
+    text:
+      'Pure homemade vibes in every bite of the chicken pickle... it tastes really good andi... thank you'
+  },
+  {
+    icon: '⭐',
+    title: 'Boneless Combo',
+    text:
+      'I ordered Chicken boneless pickle and groundnut powder today, it really tastes yummy with Rice and Dosa. Thank you Aruna for delivering tasty pickle.'
+  },
+  {
+    icon: '⭐',
+    title: 'Perfect Balance',
+    text:
+      "Hi akka. It's really delicious. Perfect balance of flavours akka, loved every bite. Thank you."
+  },
+  {
+    icon: '⭐',
+    title: 'Family Favorite',
+    text:
+      'Aruna is doing the best pickles and powders which I tasted all of them being at their best taste loved by my whole family... especially kids also loving them as their comfort food.. Good going Aruna... I wish u whole heartedly success ahead in your new venture...'
+  },
+  {
+    icon: '⭐',
+    title: 'Highly Recommend',
+    text:
+      "Highly recommend! The packaging immediately caught my eye with its clean and professional design. The taste is even better the chicken is succulent, and the spice blend is authentic and bold. It has that perfect homemade feel with a professional finish. It's rare to find a pickle where the meat quality is this high!"
   }
 ]
 
@@ -87,12 +110,6 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isTopbarScrolled, setIsTopbarScrolled] = useState(false)
-  const [selectedCutsByProduct, setSelectedCutsByProduct] = useState(() =>
-    products.reduce((acc, product) => {
-      acc[product.id] = 'With Bone'
-      return acc
-    }, {})
-  )
 
   // Get unique categories
   const categories = useMemo(() => [...new Set(products.map(p => p.category))], [])
@@ -106,6 +123,29 @@ function App() {
       return matchesSearch && matchesCategory
     })
   }, [searchTerm, selectedCategory])
+
+  // Show a single representative card per product `name` in the requested homepage order.
+  const homepageProducts = useMemo(() => {
+    const preferredOrder = [
+      'Chicken Pickle',
+      'Mutton Kheema',
+      'Gongura Boneless Chicken Pickle',
+      'Prawn Pickle',
+      'Mango Pickle',
+      'Tomoto Pickle',
+      'Rayalaseema Ground Nut Powder',
+      'Flaxseed Powder'
+    ]
+
+    const uniqueByName = filteredProducts.filter((product, index, array) => {
+      return array.findIndex((item) => item.name === product.name) === index
+    })
+
+    return preferredOrder
+      .map((name) => uniqueByName.find((product) => product.name === name))
+      .filter(Boolean)
+      .slice(0, 8)
+  }, [filteredProducts])
 
   useEffect(() => {
     if (!addedMessage) {
@@ -165,6 +205,8 @@ function App() {
           price: product.price,
           description: product.description,
           details: product.details,
+          pricing: product.pricing,
+          bonelessPricing: product.bonelessPricing,
           offer: product.offer,
           size: product.size,
           stock: product.stock,
@@ -179,14 +221,6 @@ function App() {
     event.stopPropagation()
     addToCart(product)
     setAddedMessage(`${product.name} added to cart`)
-  }
-
-  const handleCutSelect = (productId, cut, event) => {
-    event.stopPropagation()
-    setSelectedCutsByProduct((prev) => ({
-      ...prev,
-      [productId]: cut
-    }))
   }
 
   return (
@@ -261,20 +295,8 @@ function App() {
           <div className="product-grid">
             {isLoading ? (
               <SkeletonLoader count={6} />
-            ) : filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => {
-                const selectedCut = selectedCutsByProduct[product.id] || 'With Bone'
-                const isBoneless = selectedCut === 'Boneless'
-                const selectedPrice = isBoneless
-                  ? bonelessPricesBySize[product.size] || product.price
-                  : product.price
-                const productForOrder = {
-                  ...product,
-                  id: isBoneless ? `${product.id}-boneless` : product.id,
-                  name: isBoneless ? `${product.name} (Boneless)` : product.name,
-                  price: selectedPrice
-                }
-
+            ) : homepageProducts.length > 0 ? (
+              homepageProducts.map((product) => {
                 return (
                   <article
                     className="product-card glass-effect"
@@ -299,49 +321,23 @@ function App() {
                           event.currentTarget.src = fallbackProductImage
                         }}
                       />
-                      <div className="product-badges">
-                        {product.isNew && <span className="badge badge-new">New</span>}
-                        {product.discount && <span className="badge badge-discount">{product.discount}</span>}
-                      </div>
+                      {product.isNew && (
+                        <div className="product-badges">
+                          <span className="badge badge-new">New</span>
+                        </div>
+                      )}
                     </div>
 
                     <div className="product-body">
                       <h3>{product.name}</h3>
-
-                      <p className="product-price">Price: {selectedPrice}</p>
-                      <p className="offer-tag">✨ {product.offer}</p>
-
-                      <div className="card-cut-options" role="tablist" aria-label={`Select cut type for ${product.name}`}>
-                        {chickenCuts.map((cut) => (
-                          <button
-                            type="button"
-                            key={cut}
-                            className={`card-cut-btn ${selectedCut === cut ? 'card-cut-btn-active' : ''}`}
-                            onClick={(event) => handleCutSelect(product.id, cut, event)}
-                          >
-                            {cut}
-                          </button>
-                        ))}
-                      </div>
-
-                      <div className="product-meta">
-                        <button
-                          type="button"
-                          className="cart-btn hover-lift"
-                          onClick={(event) => handleAddToCart(productForOrder, event)}
-                        >
-                          Add to Cart
-                        </button>
-                        <a
-                          className="wa-btn hover-lift"
-                          href={createOrderLink(productForOrder, selectedCut)}
-                          onClick={(event) => event.stopPropagation()}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Order on WhatsApp
-                        </a>
-                      </div>
+                      <p className="product-description">{product.description}</p>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        style={{ width: '100%', marginTop: '1rem' }}
+                      >
+                        View Details & Pricing
+                      </button>
                     </div>
                   </article>
                 )
@@ -385,14 +381,14 @@ function App() {
           </div>
         </section>
 
-        <section className="testimonials scroll-reveal elevate-on-scroll" id="testimonials" aria-label="Launch Highlights">
+        <section className="testimonials scroll-reveal elevate-on-scroll" id="testimonials" aria-label="Customer Reviews">
           <div className="section-head">
-            <p className="eyebrow">Launch Highlights</p>
-            <h2>Why your first order will be worth it</h2>
+            <p className="eyebrow">Customer Reviews</p>
+            <h2>What our customers are saying</h2>
           </div>
 
           <div className="testimonial-grid">
-            {launchHighlights.map((item, index) => (
+            {customerReviews.map((item, index) => (
               <article className="testimonial-card testimonial-card-no-image" key={item.title}>
                 <div className="testimonial-body">
                   <div className="testimonial-top">
