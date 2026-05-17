@@ -9,11 +9,7 @@ export const createWhatsAppLink = (message) =>
 export const buildOrderMessage = ({ name, size, price }, cut) => {
   const baseMessage = `Hi, I want to order ${name}. Quantity: ${size}. Price: ${price}`
 
-  if (!cut) {
-    return baseMessage
-  }
-
-  return `${baseMessage}. Cut: ${cut}`
+  return baseMessage
 }
 
 export const createOrderLink = (product, cut) =>
